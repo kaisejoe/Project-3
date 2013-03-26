@@ -3,6 +3,9 @@ import java.net.*;
 
 class udpClient{
 
+	String filename;
+	ArrayList<ArrayList<Byte>> packetData;
+
 	public static void main(String args[]) throws Exception{
 		int port;
 		DatagramSocket clientSocket = new DatagramSocket();
@@ -15,7 +18,7 @@ class udpClient{
 		port = Integer.parseInt(inFromUser.readLine());
 		
 		System.out.print("Filename: ");
-		String fileName = inFromUser.readLine();
+		fileName = inFromUser.readLine();
 		byte[] sendData = new byte[1024];
 		sendData = fileName.getBytes();
 	
@@ -29,5 +32,15 @@ class udpClient{
 		String newMessage = new String(recvData);
 		System.out.println("Server says: " + newMessage);
 		clientSocket.close();
+	}
+	
+	//Write the values we've received to filename
+	private void writeToFile(){  //throws IOException? or just try/catch?
+		try{
+		FileOutputStream fos = new FileOutputStream(new File(filename));
+		for(ArrayList<Byte> b : packetData){
+			fos.write(b.toArray());
+		}
+		}catch(IOException e){System.out.println("Error writing to file "+filename);}
 	}
 }
