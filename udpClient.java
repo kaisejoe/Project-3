@@ -1,27 +1,21 @@
 import java.io.*;
 import java.net.*;
 
-class udpClient{
-
-  public static void main(String args[]) throws Exception{
-		DatagramSocket clientSocket = new DatagramSocket();
-		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-		
-		System.out.println("Enter a message to send:");
-		String message = inFromUser.readLine();
-		byte[] sendData = new byte[1024];
-		sendData = message.getBytes();
-		
-		InetAddress IPAddress = InetAddress.getByName("127.0.0.1");
-		DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
-		clientSocket.send(sendPacket);
-		
-		byte[] recvData = new byte[1024];
-		DatagramPacket recvPacket = new DatagramPacket(recvData, recvData.length);
-		clientSocket.receive(recvPacket);
-		
-		String newMessage = new String(recvData);
-		System.out.println("Message from server:\n" + newMessage);
-		clientSocket.close();
+class udpServer{
+	public static void main(String args[]) throws Exception{
+		DatagramSocket serverSocket = new DatagramSocket(9876, "148.61.112.72");
+		while(true){
+			byte[] recvData = new byte[1024];
+			byte[] sendData = new byte[1024];
+			DatagramPacket recvPacket = new DatagramPacket(recvData, recvData.length);
+			serverSocket.receive(recvPacket);
+			String fileName = new String(recvPacket.getData()).trim();
+			String newMessage = fileName + " - Sending shortly! \n";
+			InetAddress IPAddress = recvPacket.getAddress();
+			int port = recvPacket.getPort();
+			sendData = newMessage.getBytes();
+			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
+			serverSocket.send(sendPacket);
+		}
 	}
 }
