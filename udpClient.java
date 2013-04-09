@@ -34,7 +34,7 @@ class udpClient{
 		clientSocket.close();
 	}
 	
-	public boolean checkCheckSum(int checkSum, byte[] recvData){
+	private boolean checkCheckSum(int checkSum, byte[] recvData){
 		int recvCheckSum = checkSum;
 		int ourCheckSum = 0;
 		for(int i =0; i < recvData.length; i++){
@@ -47,6 +47,22 @@ class udpClient{
 			return false;
 		}
 		
+	}
+	//Get data from packet
+	private byte[] getData(byte[] recvData){
+		byte[928] data;
+		for(int i = 32; i < recvData.length; i++){
+			data[i] = recvData[i];	
+		}
+		return data;
+	}
+	//Get ext. header from packet
+	private byte[] getExtHeader(byte[] recvData){
+		byte[32] data;
+		for(int i = 0; i < 32; i++){
+			data[i] = recvData[i];	
+		}
+		return data;
 	}
 	
 	//Write the values we've received to filename
