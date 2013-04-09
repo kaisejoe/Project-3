@@ -34,6 +34,21 @@ class udpClient{
 		clientSocket.close();
 	}
 	
+	public boolean checkCheckSum(int checkSum, byte[] recvData){
+		int recvCheckSum = checkSum;
+		int ourCheckSum = 0;
+		for(int i =0; i < recvData.length; i++){
+			ourCheckSum += (int)recvData[i];
+		}
+		
+		if(ourCheckSum == recvCheckSum){
+			return true;
+		}else{
+			return false;
+		}
+		
+	}
+	
 	//Write the values we've received to filename
 	private void writeToFile(){  //throws IOException? or just try/catch?
 		try{
