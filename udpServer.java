@@ -21,14 +21,12 @@ class udpServer{
 			sendData = newMessage.getBytes();
 			makeCheckSum(sendData);
 			
-			
-			
 			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
 			serverSocket.send(sendPacket);
 		}
 	}
 	
-	public int makeCheckSum(byte[] sendData){
+	private int makeCheckSum(byte[] sendData){
 		byte[] data = sendData;
 		int checkSum = 0;
 		
@@ -37,5 +35,10 @@ class udpServer{
 		}
 		
 		return checkSum;
+	}
+	
+	//Method that fragments data into appropriate sizes in an array
+	private byte[] fragmentData(byte[] sendData){		
+		
 	}
 }
