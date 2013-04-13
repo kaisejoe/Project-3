@@ -55,6 +55,7 @@ class udpClient{
 		int recvCheckSum = checkSum;
 		int ourCheckSum = 0;
 		for(int i =0; i < recvData.length; i++){
+			if(recvData[i]==1)
 			ourCheckSum += (int)recvData[i];
 		}
 		
