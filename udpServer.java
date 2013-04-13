@@ -43,7 +43,16 @@ class udpServer{
 	}
 	
 	//Method that fragments data into appropriate sizes in an array
-	private byte[] fragmentData(byte[] sendData){		
-		
+	//928 bits of data = 116 bytes	
+	private static byte[][] fragmentData(byte[] sendData){	    
+		int length = sendData.length;
+    		int numOfFrags = (length / 116) + 1;
+		byte[][] fragData = new byte[numOfFrags][116];
+		for(int counter = 0; counter < length; counter++){
+			for(int counter2 = 0; counter2 < 116; counter2++){
+				fragData[counter][counter2] = sendData[counter];
+			}
+		}
+		return fragData;		
 	}
 }
