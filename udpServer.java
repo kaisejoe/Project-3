@@ -26,12 +26,17 @@ class udpServer{
 		}
 	}
 	
+	//changed the copy of the array to make sure there was no pointer issue. - brett
+	//changed the checksum value. even if the client received incorrect data, it would've all
+	////been counted and would've appeared to be correct.
 	private int makeCheckSum(byte[] sendData){
-		byte[] data = sendData;
+		byte[] data = (byte[])sendData.clone();
+		
 		int checkSum = 0;
 		
 		for(int i = 0; i < data.length(); i++){
-			checkSum += (int)data[i];			
+			if(data[i]==1)
+				checkSum += (int)data[i];			
 		}
 		
 		return checkSum;
