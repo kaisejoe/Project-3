@@ -55,8 +55,6 @@ class udpClient{
 		ArrayList<Integer> missingPackets = ArrayList<Integer>();
 		missingPackets = checkData(packetData);
 		int missingCount = missingPackets.size();
-		//on the fly, i wasn't able to think of a way to optimize this loop with the
-		////previous one - brett
 		
 		do{
 			String missingString = "";
@@ -68,7 +66,7 @@ class udpClient{
 			sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
 			clientSocket.send(sendPacket);
 		
-			for(int i=0; i<packetCount; i++){	
+			for(int i=0; i<missingCount; i++){	
 				byte[] recvData = new byte[1024];
 				clientSocket.receive(recvPacket);
 				recvData = recvPacket.getData();
@@ -168,10 +166,5 @@ class udpClient{
 				missing.add(i);
 		}
 		return missing;
-	}
-	
-	//blank because i don't know what we're going to send - brett
-	private sendAck(){
-		
 	}
 }
