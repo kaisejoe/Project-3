@@ -4,7 +4,7 @@ import java.util.*;
 
 class udpClient{
 
-  static String fileName;
+	static String fileName;
 	static ArrayList<byte[]> packetData;
 
 	public static void main(String args[]) throws Exception{
@@ -12,11 +12,13 @@ class udpClient{
 		DatagramSocket clientSocket = new DatagramSocket();
 		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
 		System.out.print("IP Address: ");
-		String address = new String(inFromUser.readLine());
+		//String address = new String(inFromUser.readLine());
+		String address = new String("148.61.112.70");
 		InetAddress IPAddress = InetAddress.getByName(address);
 
 		System.out.print("Port #: ");
-		port = Integer.parseInt(inFromUser.readLine());
+		//port = Integer.parseInt(inFromUser.readLine());
+		port = 9876;
 
 		System.out.print("Filename: ");
 		fileName = inFromUser.readLine();
@@ -81,6 +83,7 @@ class udpClient{
 
 			missingPackets = checkData(packetData);
 			missingCount = missingPackets.size();
+			System.out.println(missingCount);
 		} while(missingCount>0);
 
 
@@ -109,8 +112,8 @@ class udpClient{
 
 	//Get data from packet
 	private static byte[] analyzeData(byte[] recvData){
-		byte[] data = new byte[928];
-		for(int i = 32; i < recvData.length; i++){
+		byte[] data = new byte[1012];
+		for(int i = 12; i < recvData.length; i++){
 			data[i] = recvData[i];	
 		}
 		return data;
@@ -118,35 +121,38 @@ class udpClient{
 
 	//Get sequence number header from packet
 	private static int analyzeSeqNum(byte[] recvData){
-		byte[] data = new byte[16];
-		for(int i = 0; i < 16; i++){
-			data[i] = recvData[i];	
+		byte[] data = new byte[2];
+		for(int i = 8; i < 10; i++){
+			data[i-8] = recvData[i];	
 		}
 		//found this online for convering from byte[] to int
 		//http://stackoverflow.com/questions/5399798/byte-array-and-int-conversion-in-java
 		// - Brett
-		int index = 0;
-    		int value = data[index++] << Byte.SIZE * 3;
+		//int index = 0;
+    		short value = (short) ((data[1] << 8) + (data[0]&0xFF));
+    		/*int value = data[index++] << Byte.SIZE * 3;
     		value ^= (data[index++] & 0xFF) << Byte.SIZE * 2;
     		value ^= (data[index++] & 0xFF) << Byte.SIZE * 1;
-    		value ^= (data[index++] & 0xFF);
+    		value ^= (data[index++] & 0xFF);*/
     		return value;
 	}
 
 	//Get packet total header from packet
 	private static int analyzePacketTotal(byte[] recvData){
-		byte[] data = new byte[16];
-		for(int i = 16; i < 32; i++){
-			data[i] = recvData[i];	
+		byte[] data = new byte[2];
+		System.out.println(recvData.length);
+		for(int i = 10; i < 12; i++){
+			data[i-10] = recvData[i];	
 		}
 		//found this online for convering from byte[] to int
 		//http://stackoverflow.com/questions/5399798/byte-array-and-int-conversion-in-java
 		// - Brett
-		int index = 0;
-    		int value = data[index++] << Byte.SIZE * 3;
+		//int index = 0;
+			short value = (short) ((data[1] << 8) + (data[0]&0xFF));
+    		/*int value = data[index++] << Byte.SIZE * 3;
     		value ^= (data[index++] & 0xFF) << Byte.SIZE * 2;
     		value ^= (data[index++] & 0xFF) << Byte.SIZE * 1;
-    		value ^= (data[index++] & 0xFF);
+    		value ^= (data[index++] & 0xFF);*/
     		return value;
 	}
 
