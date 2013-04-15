@@ -4,17 +4,18 @@ import java.nio.*;
 import java.util.*;
 
 class udpServer{
-  public static void main(String args[]) throws Exception{
+	public static void main(String args[]) throws Exception{
 		DatagramSocket serverSocket = new DatagramSocket(9876);
 		while(true){
 			byte[] recvData = new byte[1024];
-			byte[] sendData = new byte[1024];
+			byte[] sendData;// = new byte[1024];
 
 			DatagramPacket recvPacket = new DatagramPacket(recvData, recvData.length);
 			serverSocket.receive(recvPacket);
 
 			String fileName = new String(recvPacket.getData()).trim();
 			String newMessage = fileName + " - Sending shortly! \n";
+			System.out.println(newMessage);
 
 			InetAddress IPAddress = recvPacket.getAddress();
 
@@ -36,6 +37,8 @@ class udpServer{
 			while(incomplete){
 				serverSocket.receive(recvPacket);
 				String missing = new String(recvPacket.getData()).trim();
+				
+				System.out.println(missing);
 
 				List<String> missingList = new ArrayList<String>(Arrays.asList(missing.split(",")));
 				int numLeft = missingList.size();
@@ -73,18 +76,24 @@ class udpServer{
 	//928 bits of data = 116 bytes	
 	// Also adds in the extra data for the extended header
 	private static byte[][] fragmentData(byte[] sendData){	    
+		int pos = 0;
 		int length = sendData.length;
-    		int numOfFrags = (length / 116) + 1;
-		byte[][] fragData = new byte[numOfFrags][120];
-		for(int counter = 0; counter < length; counter++){
-			byte[] seqNum = ByteBuffer.allocate(2).putInt(counter).array();
-			byte[] totalNum = ByteBuffer.allocate(2).putInt(numOfFrags).array();
+		System.out.println(length);
+    	short numOfFrags = (short)((length / 928) + 1);
+		byte[][] fragData = new byte[numOfFrags][1016];
+		for(short counter = 0; counter < numOfFrags; counter++){
+			byte[] seqNum = ByteBuffer.allocate(2).putShort(counter).array();
+			byte[] totalNum = ByteBuffer.allocate(2).putShort(numOfFrags).array();
 			fragData[counter][0] = seqNum[0];
 			fragData[counter][1] = seqNum[1];
 			fragData[counter][2] = totalNum[0];
 			fragData[counter][3] = totalNum[1];
-			for(int counter2 = 4; counter2 < 120; counter2++){
-				fragData[counter][counter2] = sendData[counter];
+			int counter2 = 4;
+			while(pos < length && counter2 < 1016){
+			//for(int counter2 = 4; counter2 < 1016; counter2++){
+				fragData[counter][counter2] = sendData[pos];
+				counter2++;
+				pos++;
 			}
 		}
 		return fragData;		
