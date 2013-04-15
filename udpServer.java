@@ -28,8 +28,27 @@ class udpServer{
 			for(int i = 0; i < totalNumberOfPackets; i++){
 				DatagramPacket sendPacket = new DatagramPacket(fragSendData[i], fragSendData[i].length, IPAddress, port);
 				serverSocket.send(sendPacket);
-			}		
+			}
 			
+			//receive more data to check for missing or incorrect packet transmission
+			boolean incomplete = true;
+			while(incomplete){
+				serverSocket.receive(recvPacket);
+				String missing = new String(recvPacket.getData()).trim();
+				
+				List<String> missing = new ArrayList<String>(Arrays.asList(missing.split(",")));
+				int numLeft = missing.size();
+				
+				if(numLeft>0){
+					for(int i = 0; i < numLeft; i++){
+						int packetNum = missing.get(i);
+						DatagramPacket sendPacket = new DatagramPacket(fragSendData[packetNum], fragSendData[packetNum].length, IPAddress, port);
+						serverSocket.send(sendPacket);
+					}
+				} else {
+					incomplete = false;
+				}
+			}
 		}
 	}
 	
