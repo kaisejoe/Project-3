@@ -4,7 +4,7 @@ import java.util.*;
 
 class udpClient{
 
-  static String fileName;
+	static String fileName;
 
 	public static void main(String args[]) throws Exception{
 		int port;
@@ -147,7 +147,7 @@ class udpClient{
 		//http://stackoverflow.com/questions/5399798/byte-array-and-int-conversion-in-java
 		// - Brett
 		//int index = 0;
-    		short value = (short) ((data[0] << 8) | (data[1]));
+    		short value = (short) ((data[0] << 8) | (data[1]& 0xFF));
     		/*int value = data[index++] << Byte.SIZE * 3;
     		value ^= (data[index++] & 0xFF) << Byte.SIZE * 2;
     		value ^= (data[index++] & 0xFF) << Byte.SIZE * 1;
@@ -167,11 +167,12 @@ class udpClient{
 		//http://stackoverflow.com/questions/5399798/byte-array-and-int-conversion-in-java
 		// - Brett
 		//int index = 0;
-			short value = (short) (((data[0]) << 8) | (data[1]));
+			short value = (short) (((data[0]) << 8) | (data[1]& 0xFF));
     		/*int value = data[index++] << Byte.SIZE * 3;
     		value ^= (data[index++] & 0xFF) << Byte.SIZE * 2;
     		value ^= (data[index++] & 0xFF) << Byte.SIZE * 1;
     		value ^= (data[index++] & 0xFF);*/
+			System.out.println("Total packets: " + value);
     		return value;
 	}
 
